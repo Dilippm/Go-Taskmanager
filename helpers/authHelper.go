@@ -4,11 +4,12 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/dilippm92/taskmanager/config"
 	"golang.org/x/crypto/bcrypt"
 )
 
 // Secret key used for signing JWT tokens
-var jwtSecretKey = []byte("your_secret_key") // Replace with your actual secret key
+var jwtSecretKey = []byte(config.JWT_SECRET_KEY) // Replace with your actual secret key
 func ComparePasswords(hashedPassword, password string) error {
 
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))

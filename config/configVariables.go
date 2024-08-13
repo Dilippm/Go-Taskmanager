@@ -11,6 +11,7 @@ import (
 var (
 	PORT      string
 	MONGO_URI string
+	JWT_SECRET_KEY string
 )
 
 func init() {
@@ -23,4 +24,5 @@ func init() {
 	// Set environment variables
 	PORT = os.Getenv("PORT")
 	MONGO_URI = os.Getenv("MONGODB_URI")
+	JWT_SECRET_KEY = os.Getenv("JWT_SECRET_KEY")
 }
