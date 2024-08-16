@@ -7,4 +7,5 @@ func MainRoutes(router *gin.Engine) {
 	apiGroup := router.Group("/api")
 
 	Authroutes(apiGroup)
+	Sprintroutes(apiGroup)
 }

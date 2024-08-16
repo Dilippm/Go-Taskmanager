@@ -22,7 +22,7 @@ type Sprint struct {
 	EndDate     time.Time          `bson:"end_date"`
 	SubTasks    []primitive.ObjectID `bson:"sub_tasks"` // Array of SubTask IDs
 	Priority    Priority           `bson:"priority"`
-	UserId   primitive.ObjectID `bson:"_id,omitempty"`
+	UserId   string 			   `bson:"userId"`
 }
 
 // SubTask represents a subtask in the project management system.
