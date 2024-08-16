@@ -125,3 +125,20 @@ func UpdateSprint(id primitive.ObjectID, sprint models.Sprint) (*mongo.UpdateRes
 	
 
 }
+// Delete a sprint by sprint id
+func DeleteSprint(id primitive.ObjectID)(*mongo.DeleteResult, error){
+	collection := GetSprintCollection()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Specify the filter to match the document to delete
+	filter := bson.M{"_id": id}
+
+	// Perform the delete operation
+	result, err := collection.DeleteOne(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}

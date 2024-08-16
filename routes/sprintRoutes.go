@@ -13,5 +13,6 @@ func Sprintroutes(routerGroup *gin.RouterGroup)  {
 		sprintGroup.GET("/get_all_sprints/:id",controllers.GetAllSprints)
 		sprintGroup.GET("/get_sprint_detail/:id",controllers.GetSprintDetails)
 		sprintGroup.PUT("/update_sprint/:id",controllers.UpdateSprint)
+		sprintGroup.DELETE("/delete_sprint/:id",controllers.DeleteSprint)
 	}
 }

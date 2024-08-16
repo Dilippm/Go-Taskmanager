@@ -112,3 +112,25 @@ func UpdateSprint(c *gin.Context){
 	 })
 
 }
+
+// delete a sprint by sprint id
+func DeleteSprint(c *gin.Context){
+	id:= c.Param("id")
+	sprintID, err := primitive.ObjectIDFromHex(id)
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid sprint ID"})
+        return
+    }
+	// Delete the sprint in the database
+	_, err = queries.DeleteSprint(sprintID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete sprint"})
+		return
+	}
+
+	// Return a success response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Sprint deleted successfully",
+	})
+
+}
