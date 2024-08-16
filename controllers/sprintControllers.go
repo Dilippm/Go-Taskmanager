@@ -7,6 +7,7 @@ import (
 	"github.com/dilippm92/taskmanager/models"
 	"github.com/dilippm92/taskmanager/models/queries"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // test controller for sprint controllers
@@ -78,4 +79,36 @@ func GetSprintDetails(c *gin.Context){
 		return
 	}
 	c.JSON(http.StatusOK,sprint)
+}
+
+// update a sprint by sprint id
+func UpdateSprint(c *gin.Context){
+	id:= c.Param("id")
+	sprintID, err := primitive.ObjectIDFromHex(id)
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid sprint ID"})
+        return
+    }
+	 // Bind the request body to the Sprint struct
+	 var sprint models.Sprint
+	 if err := c.ShouldBindJSON(&sprint); err != nil {
+		 c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		 return
+	 }
+ 
+	 // Update the sprint in the database
+	 result, err := queries.UpdateSprint(sprintID, sprint)
+	 if err != nil {
+		 c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update sprint"})
+		 return
+	 }
+ 
+	 // Return a success response
+	 c.JSON(http.StatusOK, gin.H{
+		 "message":    "Sprint updated successfully",
+		 "matched":    result.MatchedCount,
+		 "modified":   result.ModifiedCount,
+		 "upsertedID": result.UpsertedID,
+	 })
+
 }

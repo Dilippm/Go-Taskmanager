@@ -12,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	 "go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // GetSprintCollection returns a handle to the sprints collection
@@ -88,4 +89,30 @@ func GetSingleSprintDetails(sprintId string)(models.Sprint,error){
 		return models.Sprint{}, err
 	}
 	return sprint, nil
+}
+
+// update a sprint by sprint id
+
+func UpdateSprint(id primitive.ObjectID, sprint models.Sprint) (*mongo.UpdateResult, error) {
+	collection:= GetSprintCollection()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+	 // Create the update document
+	 update := bson.M{
+        "$set": sprint,
+    }
+
+    // Specify the filter and update options
+    filter := bson.M{"_id": id}
+    opts := options.Update().SetUpsert(false)
+
+    // Perform the update
+    result, err := collection.UpdateOne(ctx, filter, update, opts)
+    if err != nil {
+        return nil, err
+    }
+
+    return result, nil
+	
+
 }

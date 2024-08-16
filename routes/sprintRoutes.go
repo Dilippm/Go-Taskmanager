@@ -12,5 +12,6 @@ func Sprintroutes(routerGroup *gin.RouterGroup)  {
 		sprintGroup.POST("/create_sprint",controllers.CreateNewSprint)
 		sprintGroup.GET("/get_all_sprints/:id",controllers.GetAllSprints)
 		sprintGroup.GET("/get_sprint_detail/:id",controllers.GetSprintDetails)
+		sprintGroup.PUT("/update_sprint/:id",controllers.UpdateSprint)
 	}
 }
