@@ -98,9 +98,18 @@ func UpdateSprint(id primitive.ObjectID, sprint models.Sprint) (*mongo.UpdateRes
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
 	 // Create the update document
+	 
 	 update := bson.M{
-        "$set": sprint,
+        "$set": bson.M{
+            "sprint_name": sprint.SprintName,
+            "start_date":  sprint.StartDate,
+            "end_date":    sprint.EndDate,
+            "sub_tasks":   sprint.SubTasks,
+            "priority":    sprint.Priority,
+            "userId":      sprint.UserId,
+        },
     }
+
 
     // Specify the filter and update options
     filter := bson.M{"_id": id}
