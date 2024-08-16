@@ -54,3 +54,28 @@ func CreateNewSprint(c *gin.Context){
 		"result":result.InsertedID,
 	})
 }
+
+// get all sprints fo a user by userId
+func GetAllSprints(c *gin.Context){
+	userId := c.Param("id")
+	
+	sprints,err:= queries.GetAllSprints(userId)
+	if err!= nil{
+		c.Error(fmt.Errorf("failed to find sprints with userID %s: %w", userId, err))
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	c.JSON(http.StatusOK, sprints)
+}
+
+// get sprint detials by sprint id
+func GetSprintDetails(c *gin.Context){
+	sprintId:=c.Param("id")
+	sprint,err:=queries.GetSingleSprintDetails(sprintId)
+	if err!= nil{
+		c.Error(fmt.Errorf("failed to find sprints with sprintID %s: %w", sprintId, err))
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	c.JSON(http.StatusOK,sprint)
+}

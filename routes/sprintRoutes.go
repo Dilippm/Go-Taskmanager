@@ -6,9 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 func Sprintroutes(routerGroup *gin.RouterGroup)  {
-	sprintGroup:=routerGroup.Group("/sprint")
+	sprintGroup:=routerGroup.Group("/sprint",middlewares.JwtTokenVerify())
 	{
-		sprintGroup.GET("/test",middlewares.JwtTokenVerify(),controllers.TestSprintController)
-		sprintGroup.POST("/create_sprint",middlewares.JwtTokenVerify(),controllers.CreateNewSprint)
+		sprintGroup.GET("/test",controllers.TestSprintController)
+		sprintGroup.POST("/create_sprint",controllers.CreateNewSprint)
+		sprintGroup.GET("/get_all_sprints/:id",controllers.GetAllSprints)
+		sprintGroup.GET("/get_sprint_detail/:id",controllers.GetSprintDetails)
 	}
 }
