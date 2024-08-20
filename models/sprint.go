@@ -23,6 +23,7 @@ type Sprint struct {
 	SubTasks    []primitive.ObjectID `bson:"sub_tasks"` // Array of SubTask IDs
 	Priority    Priority           `bson:"priority"`
 	UserId   string 			   `bson:"userId"`
+	PopulatedSubTasks []SubTask          `json:"PopulatedSubTasks"`
 }
 
 // SubTask represents a subtask in the project management system.

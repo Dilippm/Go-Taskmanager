@@ -94,6 +94,36 @@ func GetSingleSprintDetails(sprintId string)(models.Sprint,error){
 		log.Printf("Failed to find user: %v", err)
 		return models.Sprint{}, err
 	}
+
+	// If the sprint contains SubTask IDs, populate them
+	if len(sprint.SubTasks) > 0 {
+		subTaskCollection := GetSubTaskCollection() // Assume you have this function
+		cursor, err := subTaskCollection.Find(ctx, bson.M{"_id": bson.M{"$in": sprint.SubTasks}})
+		if err != nil {
+			log.Printf("Failed to find subtasks: %v", err)
+			return models.Sprint{}, err
+		}
+		defer cursor.Close(ctx)
+
+		var subTasks []models.SubTask
+		for cursor.Next(ctx) {
+			var subTask models.SubTask
+			if err = cursor.Decode(&subTask); err != nil {
+				log.Printf("Failed to decode subtask: %v", err)
+				continue
+			}
+			subTasks = append(subTasks, subTask)
+		}
+
+		if err := cursor.Err(); err != nil {
+			log.Printf("Cursor error: %v", err)
+			return models.Sprint{}, err
+		}
+
+		// Assign the populated subTasks to the sprint
+		sprint.PopulatedSubTasks = subTasks
+	}
+
 	return sprint, nil
 }
 
