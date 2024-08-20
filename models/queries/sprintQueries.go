@@ -143,6 +143,7 @@ func UpdateSprint(id primitive.ObjectID, sprint models.Sprint) (*mongo.UpdateRes
             "sub_tasks":   sprint.SubTasks,
             "priority":    sprint.Priority,
             "userId":      sprint.UserId,
+			"status":sprint.Status,
         },
     }
 

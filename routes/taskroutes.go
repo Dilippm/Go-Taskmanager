@@ -12,5 +12,6 @@ func Taskroutes(routerGroup *gin.RouterGroup){
 	taskGroup.POST("/create_task",controllers.CreateNewTask)
 	taskGroup.GET("/get_task_details/:id",controllers.GetTaskDetails)
 	taskGroup.PUT("/update_task/:id",controllers.UpdateTask)
+	taskGroup.DELETE("/delete_task/:id",controllers.DeleteTask)
 }
 }

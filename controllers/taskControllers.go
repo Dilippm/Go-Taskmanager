@@ -91,3 +91,24 @@ if err != nil {
 })
 
 }
+
+//delete a task
+func DeleteTask(c *gin.Context){
+	id:=c.Param("id")
+	taskId,err:= primitive.ObjectIDFromHex(id)
+	if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid task ID"})
+        return
+    }
+	_,err = queries.DeleteTask(taskId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete task"})
+		return
+	}
+
+	// Return a success response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "task deleted successfully",
+	})
+
+}
