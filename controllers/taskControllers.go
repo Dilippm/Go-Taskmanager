@@ -7,6 +7,7 @@ import (
 	"github.com/dilippm92/taskmanager/models"
 	"github.com/dilippm92/taskmanager/models/queries"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // test controller for task controllers
@@ -61,4 +62,32 @@ func GetTaskDetails(c * gin.Context){
 		return
 	}
 	c.JSON(http.StatusOK,task)
+}
+
+// update a task
+func UpdateTask(c *gin.Context){
+id:= c.Param("id")
+taskId,err:= primitive.ObjectIDFromHex(id)
+if err != nil {
+	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid task ID"})
+	return
+}
+var task models.SubTask
+if err := c.ShouldBindJSON(&task); err != nil {
+	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+	return
+}
+result,err:= queries.UpdateTask(taskId,task)
+if err != nil {
+	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update task"})
+	return
+}
+ // Return a success response
+ c.JSON(http.StatusOK, gin.H{
+	"message":    "Task updated successfully",
+	"matched":    result.MatchedCount,
+	"modified":   result.ModifiedCount,
+	"upsertedID": result.UpsertedID,
+})
+
 }

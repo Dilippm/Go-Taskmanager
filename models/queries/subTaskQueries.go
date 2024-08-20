@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+     "go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // get subtask collection returns a handle to the subtask collection
@@ -72,4 +73,34 @@ if err != nil {
     return models.SubTask{}, err
 }
 return task, nil
+}
+
+func UpdateTask(id primitive.ObjectID, task models.SubTask)(*mongo.UpdateResult, error) {
+    collection:= GetSubTaskCollection()
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+	 // Create the update document
+     update := bson.M{
+        "$set": bson.M{
+            "task_name": task.TaskName,
+            "start_date":  task.StartDate,
+            "end_date":    task.EndDate,
+           "description": task.Description,
+            "priority":    task.Priority,
+           
+        },
+    }
+
+
+    // Specify the filter and update options
+    filter := bson.M{"_id": id}
+    opts := options.Update().SetUpsert(false)
+
+    // Perform the update
+    result, err := collection.UpdateOne(ctx, filter, update, opts)
+    if err != nil {
+        return nil, err
+    }
+
+    return result, nil
 }
