@@ -9,8 +9,8 @@ import (
 
 	"github.com/dilippm92/taskmanager/config"
 	"github.com/dilippm92/taskmanager/models"
-	
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -55,4 +55,21 @@ func CreateSubTask(task models.SubTask) (*mongo.InsertOneResult, error) {
     }
 
     return result, nil
+}
+
+func GetTaskDetails(taskId string)(models.SubTask,error){
+    collection:= GetSubTaskCollection()
+    id,err:=primitive.ObjectIDFromHex(taskId)
+if err!= nil{
+    return models.SubTask{},err
+}
+var task models.SubTask
+ctx,cancel:= context.WithTimeout(context.Background(),10*time.Second)
+defer cancel()
+err = collection.FindOne(ctx,bson.M{"_id":id}).Decode(&task)
+if err != nil {
+    log.Printf("Failed to find user: %v", err)
+    return models.SubTask{}, err
+}
+return task, nil
 }

@@ -50,3 +50,15 @@ c.JSON(http.StatusCreated,gin.H{
 	"result":result.InsertedID,
 })
 }
+
+// get task details by task id
+func GetTaskDetails(c * gin.Context){
+	taskId:= c.Param("id")
+	task,err:= queries.GetTaskDetails(taskId)
+	if err!= nil{
+		c.Error(fmt.Errorf("failed to find sprints with task Id %s: %w", taskId, err))
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	c.JSON(http.StatusOK,task)
+}
