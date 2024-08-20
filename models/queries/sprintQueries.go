@@ -6,7 +6,8 @@ import (
 	"log"
 
 	"time"
-
+	"fmt"
+"errors"
 	"github.com/dilippm92/taskmanager/config"
 	"github.com/dilippm92/taskmanager/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -27,6 +28,11 @@ func GetSprintCollection() *mongo.Collection {
 
 func CreateSprint(sprint models.Sprint )(*mongo.InsertOneResult,error){
 	collection:= GetSprintCollection()
+	// Ensure the sub_tasks field is an array, defaulting to an empty array if not provided
+	if sprint.SubTasks == nil {
+		sprint.SubTasks = []primitive.ObjectID{}
+	}
+
 	ctx,cancel:= context.WithTimeout(context.Background(),10* time.Second)
 	defer cancel()
 	// insert one operation with context
@@ -141,4 +147,40 @@ func DeleteSprint(id primitive.ObjectID)(*mongo.DeleteResult, error){
 	}
 
 	return result, nil
+}
+// update sprint data subtask field with new task id
+func UpdateSprintWithSubTask(sprintID primitive.ObjectID, subTaskID interface{}) error {
+    // Get the sprint collection
+    sprintCollection := GetSprintCollection()
+    if sprintCollection == nil {
+        return errors.New("failed to get sprint collection")
+    }
+
+    // Create a context with a timeout
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    // Prepare the update document to initialize sub_tasks as an array if it is null, then push the new sub-task ID
+    update := bson.M{
+       
+        "$push": bson.M{
+            "sub_tasks": subTaskID,
+        },
+    }
+
+    // Prepare the filter to find the sprint by the provided sprint_id
+    filter := bson.M{"_id": sprintID}
+
+    // Perform the update
+    sprResult, err := sprintCollection.UpdateOne(ctx, filter, update)
+    if err != nil {
+        log.Printf("Failed to update sprint: %v", err)
+        return err
+    }
+    if sprResult.MatchedCount == 0 {
+        log.Printf("No sprint found with the given SprintID")
+        return fmt.Errorf("no sprint found with ID: %v", sprintID.Hex())
+    }
+
+    return nil
 }

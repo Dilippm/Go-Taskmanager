@@ -8,4 +8,5 @@ func MainRoutes(router *gin.Engine) {
 
 	Authroutes(apiGroup)
 	Sprintroutes(apiGroup)
+	Taskroutes(apiGroup)
 }

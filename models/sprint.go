@@ -33,5 +33,5 @@ type SubTask struct {
 	StartDate   time.Time          `bson:"start_date"`
 	EndDate     time.Time          `bson:"end_date"`
 	Priority    Priority           `bson:"priority"`
-	SprintID    primitive.ObjectID `bson:"sprint_id"` // Reference to the Sprint ID
+	SprintID    string `bson:"sprint_id"` // Reference to the Sprint ID
 }
